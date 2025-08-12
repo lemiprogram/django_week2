@@ -2,12 +2,25 @@
     <!DOCTYPE html>
     <html>
     <head>
-        <title>{%block title%}{%endblock%}</title>
-
-                <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                                
+        <title>{%block title%}Photo Gallery{%endblock%}</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <style type="text/tailwindcss">      
+            @theme {
+                    --color-primary-100:#2E8B57;
+                    --color-primary-200:#61bc84;
+                    --color-primary-300:#c6ffe6;
+                    --color-accent-100:#8FBC8F;
+                    --color-accent-200:#345e37;
+                    --color-text-100:#FFFFFF;
+                    --color-text-200:#e0e0e0;
+                    --color-bg-100:#1E1E1E;
+                    --color-bg-200:#2d2d2d;
+                    --color-bg-300:#454545;
+      
+            }    
+        </style>                        
 </head>
-    <body>
+    <body class="bg-bg-100 ">
         {% block content %}{% endblock %}
         <script src="{% static 'scripts.js' %}"></script>
                             

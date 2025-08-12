@@ -278,24 +278,23 @@ with open(f'{PROJECT_NAME}/settings.py', 'r') as file:
     
     for i, line in enumerate(SETTINGS_LINES):
         if 'DEBUG =' in line:
-
             SETTINGS_LINES[i] = "DEBUG = os.getenv('DEBUG')"
-            
             continue
         if 'SECRET_KEY =' in line:
             match = re.search(r"'(.*)'", line)
             SECRET_KEY = match.group(1)
             SETTINGS_LINES[i] = "SECRET_KEY = os.getenv('SECRET_KEY')"
-            
             continue
         if 'ALLOWED_HOSTS =' in line:
             SETTINGS_LINES[i] = "ALLOWED_HOSTS = os.getenv('ALLOWED_HOST', '127.0.0.1').split(',')"
             continue
-        if 'STATIC_URL =' in line:
-            SETTINGS_LINES.insert(i+1,"STATICFILES_DIRS = [")
-            SETTINGS_LINES.insert(i+2,'BASE_DIR / "my_app" / "static",')
-            SETTINGS_LINES.insert(i+3,"]")
         
+        if 'MIDDLEWARE =' in line:
+            SETTINGS_LINES.insert(i-3, "LOGIN_REDIRECT_URL = '/home/'")
+            SETTINGS_LINES.insert(i-2, "LOGOUT_REDIRECT_URL = '/login/'")
+            SETTINGS_LINES.insert(i-2, "LOGINT_URL = '/login/'")
+            continue
+
         if 'INSTALLED_APPS' in line:
             found_installed_apps = True
             continue
@@ -307,13 +306,14 @@ with open(f'{PROJECT_NAME}/settings.py', 'r') as file:
         if  line.strip().startswith('DATABASES = {') and DATABASE_PERMISSIONS == 'y':
             found_database = True
             continue
-        
 
         if found_installed_apps and line.strip() == ']':
             SETTINGS_LINES.insert(i, f"    '{APP_NAME}',\n")
+            SETTINGS_LINES.insert(i+1, f"    'rest_framework',\n")
             if CLOUDINARY_PERMISSIONS == 'y':
-                SETTINGS_LINES.insert(i+1, "    'cloudinary',\n")
+                SETTINGS_LINES.insert(i+2, "    'cloudinary',\n")
             found_installed_apps = False
+            continue
         if found_database:
             SETTINGS_LINES[i] = ""
             if '}' in line:
@@ -331,15 +331,20 @@ with open(f'{PROJECT_NAME}/settings.py', 'r') as file:
 """)
                 found_database = False
                 continue
-
+        if 'STATIC_URL =' in line:
+            SETTINGS_LINES.insert(i+1,"STATICFILES_DIRS = [")
+            SETTINGS_LINES.insert(i+2,'BASE_DIR / "my_app" / "static",')
+            SETTINGS_LINES.insert(i+3,"]")
+            break
 with open(f'{PROJECT_NAME}/settings.py', 'w') as file:
     file.writelines(SETTINGS_LINES)
-if CLOUDINARY_PERMISSIONS == "y":
-    with open(f'{PROJECT_NAME}/settings.py', 'a') as file:
+with open(f'{PROJECT_NAME}/settings.py', 'a') as file:
+    
+    if CLOUDINARY_PERMISSIONS == "y":
 
 
 
-            file.write("""
+        file.write("""
 cloudinary.config(
     cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key = os.getenv('CLOUDINARY_API_KEY'),
@@ -355,6 +360,9 @@ with open(f"{APP_NAME}/views.py", "w") as views_file:
         views_file.write(f"""
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from .forms import *
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
                          """)
 if DATABASE_PERMISSIONS == 'y':
 
@@ -489,11 +497,7 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
-class SignInForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
+
                          """)
     
 if DATABASE_READY in ['y',"yes"]:
