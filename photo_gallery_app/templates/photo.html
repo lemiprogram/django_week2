@@ -1,0 +1,38 @@
+
+{% extends 'layout.html' %}
+{% block title %}
+
+                            {{photo.title.title}}
+
+{% endblock%}
+{% block content %}
+    <div id="card-section" class=" w-[100vw] h-[100vh] flex justify-center items-center">
+        <div class="card flex w-[60%] h-[500px] bg-bg-200 p-1 rounded-2xl">
+        
+            <div class="w-[50%] flex  justify-center items-center">
+                <img src="{{photo.photo.url}}" alt="{{photo.title}}" class="">
+            </div>
+            <div class="w-[50%] flex flex-col pt-5 ">
+                <div class="header flex  h-[10%] ">
+                    <div class="profile_img flex justify-center items-center p-5 bg-red-500 w-11 h-11 rounded-full cursor-pointer"></div>
+                    <div class="text-text-100 text-3xl capitalize ml-4 flex justify-start  w-full ">{{photo.title}}</div>
+                    <a href="{{previous_url}}" class="back_btn flex justify-center items-center p-5 w-11 h-11 rounded-full cursor-pointer bg-bg-300"><i class="fa-solid fa-arrow-left fa-lg fa-white" style="color:var(--text-100);"></i></a>
+                </div>
+                <div class="tags h-[20%]">
+                    {% if photo.tags %}
+                        <ul class="m-4">
+                            {% for tag in photo.tags %}
+                                <li class="px-2 py-1 bg-accent-200 capitalize text-white rounded-lg inline-block mr-2 text-sm">#{{tag}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="comments h-[60%]"></div>
+                <div class="footer flex h-[10%] items-center px-3">
+                    <div class="like-count text-text-100 font-bold text-sm">0 Likes</div>
+                    <div class="like text-text-100 font-bold cursor-pointer text-lg ml-5">Like</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock%}

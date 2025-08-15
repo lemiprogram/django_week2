@@ -1,43 +1,46 @@
 
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .forms import *
-from django.contrib.auth import authenticate, login, logout
+from .models import *
+from random import choice
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 @login_required
 def home(request):
-    return render(request, 'index.html')
-
-
-def register(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request,username=username,password=password)
-            login(request,user)
-            return redirect('home')
-    else:
-        form = SignUpForm()
-    return render(request,'registration/register.html', {'form':form})
-
-def login(request):
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Redirect to a success page
-            else:
-                form.add_error(None, "Invalid username or password.")
-    else:
-        form = LoginForm()
-    return render(request, 'registration/login.html')
+    context = {
+        'user':request.user,
+        'photos':Photo_Gallery.objects.all(),
+    }
     
+    return render(request, 'index.html', context)
+
+def photo(request,username,pk):
+    context = {
+        'photo':None,
+        'previous_url':None
+    }
+    previous_url = request.META.get('HTTP_REFERER')
+    try:
+        photo = Photo_Gallery.objects.get(pk=pk)
+    except Photo_Gallery.DoesNotExist:
+        return redirect('home')
+    context['photo']=photo
+    context['previous_url'] = previous_url if previous_url else None
+    return render(request,'photo.html',context)
+
+
+def add_photo(request):
+    context = {}
+    return render(request,'add_photo.html',context)
+
+def user_profile(request,username):
+    context = {
+
+    }
+    if not  User.objects.filter(username=username).exists():
+        return redirect('home')
+    return render(request, 'user_profile.html')

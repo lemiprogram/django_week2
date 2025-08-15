@@ -4,6 +4,7 @@
     <head>
         <title>{%block title%}Photo Gallery{%endblock%}</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
         <style type="text/tailwindcss">      
             @theme {
                     --color-primary-100:#2E8B57;
@@ -16,14 +17,15 @@
                     --color-bg-100:#1E1E1E;
                     --color-bg-200:#2d2d2d;
                     --color-bg-300:#454545;
-      
+                    --color-faded-black:#00000005;
+                    
             }    
         </style>                        
 </head>
-    <body class="bg-bg-100 ">
+    <body class="bg-bg-100 min-h-[100vh]">
         {% block content %}{% endblock %}
         <script src="{% static 'scripts.js' %}"></script>
-                            
+        <script src="https://kit.fontawesome.com/d1388d992e.js" crossorigin="anonymous"></script>
     </body>
 </html>    
                             
