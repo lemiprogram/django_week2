@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import *
-from photo_gallery_app.models import Photo_Gallery
+from photo_gallery_app.models import *
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 @api_view(['POST'])
 def api_add_photos(request,username):
     if User.objects.get(username=username).is_authenticated:
-        serializer = PhotoSerializer(request.data)
+        serializer = PhotoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

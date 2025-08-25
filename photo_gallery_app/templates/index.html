@@ -1,28 +1,39 @@
+{% extends "layout.html" %}
 
-{% extends 'layout.html' %}
-{% block title %}
-
-                             Photo_gallery_app
-
-{% endblock %}
 {% block content %}
+<div class="max-w-4xl mx-auto p-6 space-y-6">
+    <h1 class="text-2xl font-bold text-primary-100 mb-4">Latest Posts</h1>
 
-<h1 class="text-text-100 mx-5">Hello {{user.username}}</h1>
-<h1 class="text-text-100 mx-7">Welcome to photo_gallery_app!</h1>
-<div class="photo-cards flex shrink-1 justify-start gap-5 items-center mx-10 my-5 p-6 bg-bg-200 min-h-[400px] rounded-xl">,
-    {%if photos%}
-        {%for photo in photos %}
-            <div class="w-[200px] h-[300px] overflow-hidden rounded-md hover:scale-108 transition-transform duration-300 cursor-pointer relative">
-                <a href="/photo/{{photo.id}}">
-                    <img src="{{photo.photo.url}}" alt="{{photo.title}}" class="w-full h-full object-cover">
-                </a>
+    {% for photo in photos %}
+        <div class="bg-bg-200 rounded-2xl shadow overflow-hidden">
+            <!-- User Info -->
+            <div class="flex items-center p-4 space-x-3">
+                {% if photo.profile.profile_pic %}
+                    <img src="{{ photo.profile.profile_pic.url }}?c_fill,h_50,w_50" 
+                         class="w-12 h-12 rounded-full object-cover border-2 border-primary-100">
+                {% else %}
+                    <div class="w-12 h-12 rounded-full bg-bg-300 flex items-center justify-center text-text-200">?</div>
+                {% endif %}
+                <div>
+                    <a href="{% url 'profile' photo.profile.user.username %}" 
+                       class="text-primary-100 font-semibold hover:underline">
+                        {{ photo.profile.user.username }}
+                    </a>
+                    <p class="text-xs text-text-200">{{ photo.uploaded_at|date:"M d, Y H:i" }}</p>
+                </div>
             </div>
-        {%endfor%}
-    {%else%}
-        <div class="no-photos text-5xl text-text-100">No Photos</div>
-    {%endif%}
+
+            <!-- Post Image -->
+            <img src="{{ photo.image.url }}?q_auto,f_auto,w_800,c_fill" 
+                 class="w-full max-h-[500px] object-cover">
+
+            <!-- Caption -->
+            <div class="p-4 text-text-200">
+                {{ photo.caption }}
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-text-200 text-center">No posts yet.</p>
+    {% endfor %}
 </div>
-
-
-
-{% endblock %}
+{% endblock content %}

@@ -1,7 +1,12 @@
 from django import forms
-from .models import Photo_Gallery as Photo
+from .models import Photo, Profile
 
-class PhotoForm(forms.ModelForm):
+class PhotoUploadForm(forms.ModelForm):
     class Meta:
         model = Photo
-        fields = ['image', 'title', 'description'] 
+        fields = ['image', 'caption','tags']
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['bio', 'profile_pic']

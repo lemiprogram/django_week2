@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+    <!-- Profile Info -->
+    <div class="flex items-center space-x-4 mb-6 bg-bg-200 p-4 rounded-2xl shadow">
+        {% if profile.profile_pic %}
+            <img src="{{ profile.profile_pic.url }}" 
+                 class="w-20 h-20 rounded-full object-cover border-4 border-primary-100">
+        {% else %}
+            <div class="w-20 h-20 rounded-full bg-bg-300 flex items-center justify-center text-text-200">
+                ?
+            </div>
+        {% endif %}
+        <div>
+            <h1 class="text-2xl font-bold text-primary-100">{{ profile.user.username }}</h1>
+            <p class="text-text-200">{{ profile.bio }}</p>
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+    {% if user == profile.user %}
+    <form method="post" enctype="multipart/form-data" class="mb-6 bg-bg-200 p-4 rounded-2xl shadow">
+        {% csrf_token %}
+        <div class="space-y-4">
+            {{ form.as_p }}
+            <button type="submit" 
+                class="bg-primary-100 hover:bg-primary-200 text-text-100 px-4 py-2 rounded-xl shadow">
+                Upload
+            </button>
+        </div>
+    </form>
+    {% endif %}
+
+    <!-- Gallery Grid -->
+    <div class="grid grid-cols-3 gap-4">
+        {% for photo in photos %}
+            <div class="bg-bg-200 shadow rounded-2xl overflow-hidden">
+                <img src="{{ photo.image.url }}" class="w-full h-48 object-cover">
+                <div class="p-2 text-text-200">{{ photo.caption }}</div>
+            </div>
+        {% empty %}
+            <p class="col-span-3 text-center text-text-200">No photos yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

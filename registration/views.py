@@ -14,6 +14,7 @@ def sign_up(request):
     }
     if request.method == "POST":
         form = SignUpForm(request.POST)
+        form.user = request.user.id
         if form.is_valid():
             form.save()
             return sign_in(request)

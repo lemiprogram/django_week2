@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'photo_gallery_app',
     'registration',
     'cloudinary',
-    'api'
+    'api',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
